@@ -203,7 +203,8 @@
             <div class="instruction">
                 Đừng để bóng chạm đáy!<br>
                 <span style="color: var(--neon-pink)">●</span> Hứng bóng màu<br>
-                <span style="color: var(--neon-red)">●</span> Tránh chướng ngại vật đỏ
+                <span style="color: var(--neon-red)">☠</span> Tránh đầu lâu đỏ<br>
+                <span style="color: var(--neon-pink); font-weight: bold;">❤</span> Hứng trái tim để hồi máu
             </div>
             <button onclick="startGame()">KHỞI ĐỘNG</button>
         </div>
@@ -293,7 +294,7 @@
 
             const isObstacle = level >= 2 && Math.random() < 0.25;
             const type = isObstacle ? 'OBSTACLE' : 'NORMAL';
-            const radius = isObstacle ? 14 : 11;
+            const radius = isObstacle ? 16 : 11; // Đầu lâu hơi to hơn một chút
             const baseSpeed = 3.5 + (level * 0.75);
             
             objects.push({
@@ -305,29 +306,102 @@
                 speedY: activePowerup === 'SLOW' ? baseSpeed * 0.5 : baseSpeed,
                 speedX: (Math.random() - 0.5) * (level > 3 ? 12 : 5),
                 rotation: 0,
-                rotSpeed: (Math.random() - 0.5) * 0.2
+                rotSpeed: (Math.random() - 0.5) * 0.15
             });
         }
 
         function spawnPowerup() {
             const types = [
                 { type: 'WIDE', color: '#ffea00', label: 'THANH CHẮN SIÊU RỘNG' },
-                { type: 'SLOW', color: '#00ff88', label: 'THỜI GIAN NGƯNG ĐỌNG' }
+                { type: 'SLOW', color: '#00ff88', label: 'THỜI GIAN NGƯNG ĐỌNG' },
+                { type: 'LIFE', color: '#ff00ff', label: 'HỒI PHỤC SINH MỆNH' }
             ];
-            const chosen = types[Math.floor(Math.random() * types.length)];
+            
+            let chosen;
+            const rand = Math.random();
+            if (rand < 0.15) { 
+                chosen = types[2];
+            } else if (rand < 0.57) {
+                chosen = types[0];
+            } else {
+                chosen = types[1];
+            }
+
             powerups.push({
                 x: Math.random() * (canvas.width - 40) + 20,
-                y: -30, size: 24, type: chosen.type, color: chosen.color, label: chosen.label, speedY: 2.5
+                y: -30, size: 28, type: chosen.type, color: chosen.color, label: chosen.label, speedY: 2.5
             });
         }
 
+        function drawHeart(ctx, x, y, size, color) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.beginPath();
+            const topCurveHeight = size * 0.3;
+            ctx.moveTo(0, topCurveHeight);
+            ctx.bezierCurveTo(0, 0, -size / 2, 0, -size / 2, topCurveHeight);
+            ctx.bezierCurveTo(-size / 2, (size + topCurveHeight) / 2.2, 0, size, 0, size);
+            ctx.bezierCurveTo(0, size, size / 2, (size + topCurveHeight) / 2.2, size / 2, topCurveHeight);
+            ctx.bezierCurveTo(size / 2, 0, 0, 0, 0, topCurveHeight);
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // Hàm vẽ biểu tượng đầu lâu
+        function drawSkull(ctx, x, y, radius, color) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = color;
+            
+            // Hộp sọ chính
+            ctx.beginPath();
+            ctx.arc(0, -radius * 0.2, radius * 0.7, Math.PI, 0);
+            ctx.lineTo(radius * 0.5, radius * 0.6);
+            ctx.lineTo(-radius * 0.5, radius * 0.6);
+            ctx.closePath();
+            ctx.fill();
+
+            // Răng/Hàm dưới
+            ctx.fillRect(-radius * 0.3, radius * 0.6, radius * 0.15, radius * 0.2);
+            ctx.fillRect(-radius * 0.075, radius * 0.6, radius * 0.15, radius * 0.2);
+            ctx.fillRect(radius * 0.15, radius * 0.6, radius * 0.15, radius * 0.2);
+
+            // Mắt
+            ctx.fillStyle = "#000";
+            ctx.beginPath();
+            ctx.arc(-radius * 0.25, -radius * 0.15, radius * 0.18, 0, Math.PI * 2);
+            ctx.arc(radius * 0.25, -radius * 0.15, radius * 0.18, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Mũi
+            ctx.beginPath();
+            ctx.moveTo(0, radius * 0.1);
+            ctx.lineTo(radius * 0.08, radius * 0.25);
+            ctx.lineTo(-radius * 0.08, radius * 0.25);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.restore();
+        }
+
         function applyPowerup(item) {
+            if (item.type === 'LIFE') {
+                lives++;
+                updateUI();
+                showMilestone("+1 MẠNG!", "#ff00ff");
+                playSound(659, 'sine', 0.4, 0.1); 
+                createParticles(item.x, item.y, "#ff00ff", 30);
+                return;
+            }
+
             clearTimeout(powerupTimer);
             resetPowerupEffects();
             activePowerup = item.type;
             powerupStatus.innerText = item.label;
             powerupStatus.style.color = item.color;
-            playSound(523, 'sine', 0.3, 0.1); // C5 note
+            playSound(523, 'sine', 0.3, 0.1); 
 
             if (item.type === 'WIDE') {
                 paddle.width = 240;
@@ -392,7 +466,8 @@
                             playSound(440 + combo * 2, 'sine', 0.2);
                         }
                         
-                        if (Math.random() < 0.15) spawnPowerup();
+                        const dropChance = 0.12 + (level * 0.01);
+                        if (Math.random() < dropChance) spawnPowerup();
                         
                         playSound(300 + Math.min(combo * 10, 500), 'sine', 0.08);
                         createParticles(obj.x, obj.y, obj.color, 15);
@@ -458,14 +533,12 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Vẽ lưới Hologram
             ctx.strokeStyle = "rgba(0, 242, 255, 0.05)";
             ctx.lineWidth = 1;
             gridOffset = (gridOffset + 0.5) % 40;
             for(let x=0; x<=canvas.width; x+=40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
             for(let y=gridOffset; y<=canvas.height; y+=40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
 
-            // Vẽ thanh chắn với hiệu ứng phát sáng mượt
             ctx.shadowBlur = activePowerup ? 35 : 20;
             ctx.shadowColor = paddle.color;
             ctx.fillStyle = paddle.color;
@@ -478,68 +551,56 @@
             }
             ctx.fill();
             
-            // Highlight trên thanh chắn
             ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
             ctx.fillRect(paddle.x + 5, paddle.y + 2, paddle.width - 10, 3);
 
-            // Vẽ đối tượng rơi với hiệu ứng Bloom
             objects.forEach(obj => {
                 ctx.shadowBlur = obj.type === 'OBSTACLE' ? 30 : 20;
                 ctx.shadowColor = obj.color;
-                ctx.fillStyle = obj.color;
-                
-                ctx.save();
-                ctx.translate(obj.x, obj.y);
-                ctx.rotate(obj.rotation);
                 
                 if (obj.type === 'OBSTACLE') {
-                    // Vẽ hình thoi cho chướng ngại vật
-                    ctx.beginPath();
-                    ctx.moveTo(0, -obj.radius);
-                    ctx.lineTo(obj.radius, 0);
-                    ctx.lineTo(0, obj.radius);
-                    ctx.lineTo(-obj.radius, 0);
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.strokeStyle = "#fff";
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
+                    // Vẽ biểu tượng đầu lâu cho chướng ngại vật
+                    drawSkull(ctx, obj.x, obj.y, obj.radius, obj.color);
                 } else {
+                    ctx.save();
+                    ctx.translate(obj.x, obj.y);
+                    ctx.rotate(obj.rotation);
+                    ctx.fillStyle = obj.color;
                     ctx.beginPath();
                     ctx.arc(0, 0, obj.radius, 0, Math.PI*2);
                     ctx.fill();
-                    // Vẽ core sáng ở giữa quả bóng
                     ctx.fillStyle = "rgba(255,255,255,0.5)";
                     ctx.beginPath();
                     ctx.arc(-obj.radius/3, -obj.radius/3, obj.radius/4, 0, Math.PI*2);
                     ctx.fill();
+                    ctx.restore();
                 }
-                ctx.restore();
             });
 
-            // Vẽ Powerups với vòng tròn năng lượng
             powerups.forEach(pu => {
                 ctx.shadowBlur = 30;
                 ctx.shadowColor = pu.color;
-                ctx.fillStyle = pu.color;
                 
-                // Vòng ngoài quay
                 ctx.strokeStyle = pu.color;
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 ctx.arc(pu.x, pu.y, (pu.size/2) + 5 + Math.sin(Date.now()/200)*3, 0, Math.PI*2);
                 ctx.stroke();
 
-                ctx.beginPath();
-                ctx.arc(pu.x, pu.y, pu.size/2, 0, Math.PI*2);
-                ctx.fill();
-                ctx.fillStyle = "#000";
-                ctx.font = "bold 12px sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText(pu.type[0], pu.x, pu.y + 5);
+                if(pu.type === 'LIFE') {
+                    drawHeart(ctx, pu.x, pu.y - (pu.size/2.5), pu.size, pu.color);
+                } else {
+                    ctx.fillStyle = pu.color;
+                    ctx.beginPath();
+                    ctx.arc(pu.x, pu.y, pu.size/2, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.fillStyle = "#000";
+                    ctx.font = "bold 12px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(pu.type[0], pu.x, pu.y + 5);
+                }
             });
 
-            // Vẽ hạt hiệu ứng Bloom
             ctx.shadowBlur = 0;
             particles.forEach(p => {
                 ctx.globalAlpha = p.life;
