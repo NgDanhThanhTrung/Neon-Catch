@@ -3,8 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Catch - Hardcore Survival</title>
+    <title>Neon Catch - Cyber Edition</title>
     <style>
+        :root {
+            --neon-cyan: #00f2ff;
+            --neon-pink: #ff00ff;
+            --neon-red: #e94560;
+            --neon-yellow: #ffea00;
+            --bg-dark: #050510;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -13,7 +21,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #050510;
+            background-color: var(--bg-dark);
             color: #fff;
             font-family: 'Orbitron', sans-serif;
             overflow: hidden;
@@ -23,36 +31,41 @@
         .ui-container {
             display: flex;
             justify-content: space-between;
-            width: 480px;
-            margin-bottom: 10px;
+            width: 500px;
+            margin-bottom: 15px;
             z-index: 5;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .stat-box { text-align: center; min-width: 80px; }
-        .label { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 2px; }
-        .value { font-size: 1.5rem; font-weight: bold; color: #00f2ff; text-shadow: 0 0 10px #00f2ff; }
-        .lives-value { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
-        .combo-value { color: #ffea00; text-shadow: 0 0 10px #ffea00; }
+        .label { font-size: 0.6rem; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
+        .value { font-size: 1.4rem; font-weight: bold; color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); }
+        .lives-value { color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink); }
+        .combo-value { color: var(--neon-yellow); text-shadow: 0 0 10px var(--neon-yellow); }
 
         #canvas-container {
             position: relative;
-            border-radius: 15px;
-            padding: 5px;
-            background: linear-gradient(45deg, #e94560, #00f2ff, #7000ff);
-            background-size: 200% 200%;
-            animation: borderFlow 4s linear infinite;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 8px;
+            background: linear-gradient(45deg, var(--neon-red), var(--neon-cyan), #7000ff);
+            background-size: 400% 400%;
+            animation: borderGradient 8s ease infinite;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
         }
 
-        @keyframes borderFlow {
+        @keyframes borderGradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
         canvas {
-            background: #08081a;
-            border-radius: 10px;
+            background: #0a0a20;
+            border-radius: 15px;
             display: block;
             cursor: none;
             touch-action: none;
@@ -69,76 +82,96 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
-            border-radius: 10px;
-            transition: opacity 0.5s ease;
+            border-radius: 15px;
+            backdrop-filter: blur(8px);
+            transition: all 0.5s ease;
         }
 
-        #start-overlay { background: rgba(5, 5, 20, 0.95); }
-        #game-over-overlay { background: rgba(15, 5, 5, 0.95); display: none; }
+        #start-overlay { background: rgba(5, 5, 20, 0.85); }
+        #game-over-overlay { background: rgba(20, 5, 5, 0.9); display: none; }
 
-        h1 { font-size: 3rem; margin: 0; letter-spacing: 5px; text-align: center; }
-        .neon-blue { color: #00f2ff; text-shadow: 0 0 20px #00f2ff; }
-        .neon-red { color: #e94560; text-shadow: 0 0 20px #e94560; }
+        h1 { 
+            font-size: 3.5rem; 
+            margin: 0; 
+            letter-spacing: 8px; 
+            text-align: center; 
+            font-weight: 700;
+            background: linear-gradient(to bottom, #fff, var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px var(--neon-cyan));
+        }
+
+        .instruction {
+            color: #aaa;
+            margin-top: 20px;
+            text-align: center;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
 
         button {
-            padding: 15px 45px;
-            font-size: 1.2rem;
-            background: transparent;
-            border: 2px solid #00f2ff;
-            border-radius: 50px;
-            color: #00f2ff;
+            padding: 18px 50px;
+            font-size: 1.1rem;
+            background: rgba(0, 242, 255, 0.1);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 15px;
+            color: var(--neon-cyan);
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
-            transition: all 0.3s;
-            margin-top: 30px;
+            letter-spacing: 3px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 40px;
         }
 
         button:hover { 
-            background: #00f2ff; 
+            background: var(--neon-cyan); 
             color: #000; 
-            box-shadow: 0 0 30px #00f2ff; 
-            transform: scale(1.05);
+            box-shadow: 0 0 40px var(--neon-cyan); 
+            transform: translateY(-5px) scale(1.05);
         }
 
         #powerup-status {
-            height: 30px;
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 1.1rem;
+            height: 40px;
+            margin-top: 20px;
+            font-weight: 700;
+            font-size: 1.2rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-align: center;
+            filter: drop-shadow(0 0 10px currentColor);
         }
 
         #milestone-text {
             position: absolute;
-            top: 35%;
+            top: 40%;
             width: 100%;
             text-align: center;
-            font-size: 2.5rem;
-            font-weight: bold;
+            font-size: 3rem;
+            font-weight: 900;
             pointer-events: none;
             z-index: 50;
             opacity: 0;
+            text-transform: uppercase;
+            font-style: italic;
         }
 
-        .pop-animation { animation: popFade 1s ease-out forwards; }
+        .pop-animation { animation: popFade 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
         @keyframes popFade {
-            0% { transform: scale(0.5); opacity: 0; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 0; }
+            0% { transform: scale(0.5) translateY(20px); opacity: 0; }
+            30% { transform: scale(1.1) translateY(0); opacity: 1; }
+            100% { transform: scale(1) translateY(-50px); opacity: 0; }
         }
 
-        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        .shake { animation: shake 0.5s ease-in-out; }
         @keyframes shake {
-            10%, 90% { transform: translate3d(-2px, 0, 0); }
-            20%, 80% { transform: translate3d(3px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
-            40%, 60% { transform: translate3d(5px, 0, 0); }
+            0%, 100% { transform: translate(0, 0); }
+            10%, 30%, 50%, 70%, 90% { transform: translate(-4px, 0); }
+            20%, 40%, 60%, 80% { transform: translate(4px, 0); }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -166,20 +199,22 @@
         <canvas id="gameCanvas" width="480" height="600"></canvas>
 
         <div id="start-overlay" class="overlay">
-            <h1 class="neon-blue">NEON CATCH</h1>
-            <p style="color: #888; margin-top: 15px; text-align: center; padding: 0 20px;">
-                Đừng để bóng chạm đáy!<br>Hứng bóng màu, tránh bóng đỏ.
-            </p>
-            <button onclick="startGame()">BẮT ĐẦU</button>
+            <h1>NEON CATCH</h1>
+            <div class="instruction">
+                Đừng để bóng chạm đáy!<br>
+                <span style="color: var(--neon-pink)">●</span> Hứng bóng màu<br>
+                <span style="color: var(--neon-red)">●</span> Tránh chướng ngại vật đỏ
+            </div>
+            <button onclick="startGame()">KHỞI ĐỘNG</button>
         </div>
 
         <div id="game-over-overlay" class="overlay">
-            <h1 class="neon-red">THẤT BẠI</h1>
-            <div style="text-align: center; margin-top: 20px;">
-                <p id="finalScoreText" style="font-size: 1.5rem; margin: 5px 0;">Điểm: 0</p>
-                <p id="highScoreText" style="color: #aaa;">Kỷ lục: 0</p>
+            <h1 style="background: linear-gradient(to bottom, #fff, var(--neon-red)); -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px var(--neon-red));">THẤT BẠI</h1>
+            <div style="text-align: center; margin-top: 30px;">
+                <p id="finalScoreText" style="font-size: 1.8rem; margin: 10px 0; color: var(--neon-cyan);">ĐIỂM: 0</p>
+                <p id="highScoreText" style="color: #666; font-size: 1rem;">KỶ LỤC: 0</p>
             </div>
-            <button onclick="resetGame()">THỬ LẠI</button>
+            <button onclick="resetGame()" style="border-color: var(--neon-red); color: var(--neon-red); background: rgba(233, 69, 96, 0.1);">THỬ LẠI</button>
         </div>
     </div>
     
@@ -207,7 +242,7 @@
             }
         }
 
-        function playSound(freq, type = 'square', duration = 0.1, vol = 0.1) {
+        function playSound(freq, type = 'square', duration = 0.1, vol = 0.05) {
             if (!audioCtx) return;
             try {
                 const osc = audioCtx.createOscillator();
@@ -215,7 +250,7 @@
                 osc.type = type;
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
                 gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
                 osc.start();
@@ -236,16 +271,18 @@
 
         let paddle = { 
             width: PADDLE_DEFAULT_WIDTH, 
-            height: 15, 
+            height: 12, 
             x: 190, 
-            y: 560, 
-            color: "#e94560", 
-            targetX: 190 
+            y: 565, 
+            color: "#00f2ff", 
+            targetX: 190,
+            glow: 20
         };
 
         function showMilestone(text, color = "#fff") {
             milestoneBox.innerText = text;
             milestoneBox.style.color = color;
+            milestoneBox.style.textShadow = `0 0 20px ${color}`;
             milestoneBox.classList.remove('pop-animation');
             void milestoneBox.offsetWidth; 
             milestoneBox.classList.add('pop-animation');
@@ -254,31 +291,33 @@
         function createObject() {
             if (objects.length > 0) return;
 
-            const isObstacle = level >= 2 && Math.random() < 0.2;
+            const isObstacle = level >= 2 && Math.random() < 0.25;
             const type = isObstacle ? 'OBSTACLE' : 'NORMAL';
-            const radius = isObstacle ? 12 : 10;
-            const baseSpeed = 3.5 + (level * 0.7);
+            const radius = isObstacle ? 14 : 11;
+            const baseSpeed = 3.5 + (level * 0.75);
             
             objects.push({
                 x: Math.random() * (canvas.width - radius * 2) + radius,
                 y: -radius,
                 radius: radius,
                 type: type,
-                color: isObstacle ? '#ff0000' : `hsl(${Math.random() * 360}, 100%, 60%)`,
+                color: isObstacle ? '#e94560' : `hsl(${Math.random() * 360}, 80%, 60%)`,
                 speedY: activePowerup === 'SLOW' ? baseSpeed * 0.5 : baseSpeed,
-                speedX: (Math.random() - 0.5) * (level > 3 ? 10 : 4)
+                speedX: (Math.random() - 0.5) * (level > 3 ? 12 : 5),
+                rotation: 0,
+                rotSpeed: (Math.random() - 0.5) * 0.2
             });
         }
 
         function spawnPowerup() {
             const types = [
-                { type: 'WIDE', color: '#ffea00', label: 'THANH CHẮN LỚN' },
-                { type: 'SLOW', color: '#00ff88', label: 'THỜI GIAN CHẬM' }
+                { type: 'WIDE', color: '#ffea00', label: 'THANH CHẮN SIÊU RỘNG' },
+                { type: 'SLOW', color: '#00ff88', label: 'THỜI GIAN NGƯNG ĐỌNG' }
             ];
             const chosen = types[Math.floor(Math.random() * types.length)];
             powerups.push({
                 x: Math.random() * (canvas.width - 40) + 20,
-                y: -20, size: 20, type: chosen.type, color: chosen.color, label: chosen.label, speedY: 3
+                y: -30, size: 24, type: chosen.type, color: chosen.color, label: chosen.label, speedY: 2.5
             });
         }
 
@@ -288,33 +327,36 @@
             activePowerup = item.type;
             powerupStatus.innerText = item.label;
             powerupStatus.style.color = item.color;
-            playSound(600, 'sine', 0.2);
+            playSound(523, 'sine', 0.3, 0.1); // C5 note
 
             if (item.type === 'WIDE') {
-                paddle.width = 220;
+                paddle.width = 240;
+                paddle.color = "#ffea00";
             } else if (item.type === 'SLOW') {
                 objects.forEach(o => o.speedY *= 0.5);
+                paddle.color = "#00ff88";
             }
 
-            powerupTimer = setTimeout(resetPowerupEffects, 7000);
+            powerupTimer = setTimeout(resetPowerupEffects, 8000);
         }
 
         function resetPowerupEffects() {
             activePowerup = null;
             paddle.width = PADDLE_DEFAULT_WIDTH;
+            paddle.color = "#00f2ff";
             powerupStatus.innerText = "";
         }
 
         function triggerShake() {
             const container = document.getElementById('canvas-container');
             container.classList.add('shake');
-            setTimeout(() => container.classList.remove('shake'), 400);
+            setTimeout(() => container.classList.remove('shake'), 500);
         }
 
         function update() {
             if (!isGameRunning) return;
 
-            paddle.x += (paddle.targetX - paddle.x) * 0.25;
+            paddle.x += (paddle.targetX - paddle.x) * 0.22;
 
             if (objects.length === 0) {
                 createObject();
@@ -324,70 +366,66 @@
                 let obj = objects[i];
                 obj.y += obj.speedY;
                 obj.x += obj.speedX;
+                obj.rotation += obj.rotSpeed;
 
-                // Va chạm tường
                 if (obj.x + obj.radius > canvas.width || obj.x - obj.radius < 0) {
                     obj.speedX *= -1;
-                    playSound(200, 'sine', 0.05, 0.02);
+                    playSound(200, 'sine', 0.05, 0.01);
                 }
 
-                // Va chạm thanh chắn
                 if (obj.y + obj.radius > paddle.y && obj.y - obj.radius < paddle.y + paddle.height &&
-                    obj.x > paddle.x && obj.x < paddle.x + paddle.width) {
+                    obj.x + obj.radius > paddle.x && obj.x - obj.radius < paddle.x + paddle.width) {
                     
                     if (obj.type === 'OBSTACLE') {
                         lives--;
                         combo = 0;
                         triggerShake();
-                        playSound(100, 'sawtooth', 0.4, 0.2);
-                        showMilestone("MẤT MẠNG!", "#ff0000");
+                        playSound(80, 'sawtooth', 0.5, 0.2);
+                        showMilestone("CRITICAL DAMAGE!", "#e94560");
+                        createParticles(obj.x, obj.y, "#ff0000", 20);
                     } else {
                         combo++;
                         score += (1 + Math.floor(combo / 10));
                         
                         if (combo % 10 === 0) {
                             showMilestone(`${combo} COMBO!`, "#ffea00");
-                            playSound(600 + combo, 'sine', 0.2);
+                            playSound(440 + combo * 2, 'sine', 0.2);
                         }
                         
-                        if (Math.random() < 0.2) spawnPowerup();
+                        if (Math.random() < 0.15) spawnPowerup();
                         
-                        playSound(400 + Math.min(combo * 5, 400), 'sine', 0.05);
-                        createParticles(obj.x, obj.y, obj.color);
+                        playSound(300 + Math.min(combo * 10, 500), 'sine', 0.08);
+                        createParticles(obj.x, obj.y, obj.color, 15);
                     }
                     
                     updateUI();
                     objects.splice(i, 1);
 
-                    if (Math.floor(score / 25) + 1 > level) {
+                    if (Math.floor(score / 30) + 1 > level) {
                         level++;
                         levelElement.innerText = level;
-                        showMilestone(`CẤP ${level}`, "#00f2ff");
-                        playSound(800, 'triangle', 0.5);
+                        showMilestone(`CẤP ĐỘ ${level}`, "#00f2ff");
+                        playSound(880, 'triangle', 0.6);
                     }
 
                     if (lives <= 0) endGame();
                     continue;
                 }
 
-                // Rơi xuống đáy
                 if (obj.y - obj.radius > canvas.height) {
                     if (obj.type === 'NORMAL') {
-                        // Trừ mạng nếu để bóng màu rơi mất
                         lives--;
                         combo = 0;
                         triggerShake();
-                        playSound(150, 'sawtooth', 0.3, 0.2);
-                        showMilestone("LỠ BÓNG!", "#ff00ff");
+                        playSound(120, 'sawtooth', 0.3, 0.15);
+                        showMilestone("MISSED!", "#ff00ff");
                         updateUI();
-                        
                         if (lives <= 0) endGame();
                     }
                     objects.splice(i, 1);
                 }
             }
 
-            // Xử lý Powerups
             for (let i = powerups.length - 1; i >= 0; i--) {
                 let pu = powerups[i];
                 pu.y += pu.speedY;
@@ -395,16 +433,18 @@
                 if (pu.y + (pu.size / 2) > paddle.y && pu.y - (pu.size / 2) < paddle.y + paddle.height &&
                     pu.x + (pu.size / 2) > paddle.x && pu.x - (pu.size / 2) < paddle.x + paddle.width) {
                     applyPowerup(pu);
+                    createParticles(pu.x, pu.y, pu.color, 25);
                     powerups.splice(i, 1);
                 } else if (pu.y > canvas.height) {
                     powerups.splice(i, 1);
                 }
             }
 
-            // Xử lý Hạt hiệu ứng
             for (let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i];
-                p.x += p.speedX; p.y += p.speedY; p.life -= 0.02;
+                p.x += p.speedX; 
+                p.y += p.speedY; 
+                p.life -= p.decay;
                 if (p.life <= 0) particles.splice(i, 1);
             }
         }
@@ -418,57 +458,95 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Vẽ lưới nền
-            ctx.strokeStyle = "#121235";
+            // Vẽ lưới Hologram
+            ctx.strokeStyle = "rgba(0, 242, 255, 0.05)";
             ctx.lineWidth = 1;
-            gridOffset = (gridOffset + 1) % 40;
+            gridOffset = (gridOffset + 0.5) % 40;
             for(let x=0; x<=canvas.width; x+=40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
             for(let y=gridOffset; y<=canvas.height; y+=40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
 
-            // Vẽ thanh chắn
-            ctx.shadowBlur = 20;
+            // Vẽ thanh chắn với hiệu ứng phát sáng mượt
+            ctx.shadowBlur = activePowerup ? 35 : 20;
             ctx.shadowColor = paddle.color;
             ctx.fillStyle = paddle.color;
+            
             ctx.beginPath();
             if (ctx.roundRect) {
-                ctx.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, 8);
+                ctx.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, 6);
             } else {
                 ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
             }
             ctx.fill();
+            
+            // Highlight trên thanh chắn
+            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.fillRect(paddle.x + 5, paddle.y + 2, paddle.width - 10, 3);
 
-            // Vẽ đối tượng rơi
+            // Vẽ đối tượng rơi với hiệu ứng Bloom
             objects.forEach(obj => {
-                ctx.shadowBlur = obj.type === 'OBSTACLE' ? 25 : 15;
+                ctx.shadowBlur = obj.type === 'OBSTACLE' ? 30 : 20;
                 ctx.shadowColor = obj.color;
                 ctx.fillStyle = obj.color;
-                ctx.beginPath();
-                ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI*2);
-                ctx.fill();
-                if(obj.type === 'OBSTACLE') {
-                    ctx.strokeStyle = "#ffffff"; 
-                    ctx.lineWidth = 2; 
+                
+                ctx.save();
+                ctx.translate(obj.x, obj.y);
+                ctx.rotate(obj.rotation);
+                
+                if (obj.type === 'OBSTACLE') {
+                    // Vẽ hình thoi cho chướng ngại vật
+                    ctx.beginPath();
+                    ctx.moveTo(0, -obj.radius);
+                    ctx.lineTo(obj.radius, 0);
+                    ctx.lineTo(0, obj.radius);
+                    ctx.lineTo(-obj.radius, 0);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.strokeStyle = "#fff";
+                    ctx.lineWidth = 2;
                     ctx.stroke();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, obj.radius, 0, Math.PI*2);
+                    ctx.fill();
+                    // Vẽ core sáng ở giữa quả bóng
+                    ctx.fillStyle = "rgba(255,255,255,0.5)";
+                    ctx.beginPath();
+                    ctx.arc(-obj.radius/3, -obj.radius/3, obj.radius/4, 0, Math.PI*2);
+                    ctx.fill();
                 }
+                ctx.restore();
             });
 
-            // Vẽ Powerups
+            // Vẽ Powerups với vòng tròn năng lượng
             powerups.forEach(pu => {
-                ctx.shadowBlur = 20; ctx.shadowColor = pu.color;
+                ctx.shadowBlur = 30;
+                ctx.shadowColor = pu.color;
                 ctx.fillStyle = pu.color;
+                
+                // Vòng ngoài quay
+                ctx.strokeStyle = pu.color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(pu.x, pu.y, (pu.size/2) + 5 + Math.sin(Date.now()/200)*3, 0, Math.PI*2);
+                ctx.stroke();
+
                 ctx.beginPath();
                 ctx.arc(pu.x, pu.y, pu.size/2, 0, Math.PI*2);
                 ctx.fill();
-                ctx.strokeStyle = "#fff"; 
-                ctx.stroke();
+                ctx.fillStyle = "#000";
+                ctx.font = "bold 12px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(pu.type[0], pu.x, pu.y + 5);
             });
 
-            // Vẽ hạt hiệu ứng
+            // Vẽ hạt hiệu ứng Bloom
             ctx.shadowBlur = 0;
             particles.forEach(p => {
                 ctx.globalAlpha = p.life;
                 ctx.fillStyle = p.color;
-                ctx.fillRect(p.x, p.y, p.size, p.size);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fill();
             });
             ctx.globalAlpha = 1.0;
 
@@ -476,18 +554,23 @@
             requestAnimationFrame(draw);
         }
 
-        function createParticles(x, y, color) {
-            for(let i=0; i<12; i++) {
+        function createParticles(x, y, color, count) {
+            for(let i=0; i<count; i++) {
                 particles.push({
-                    x, y, size: Math.random()*4+1,
-                    speedX: (Math.random()-0.5)*10, speedY: (Math.random()-0.5)*10,
-                    life: 1.0, color
+                    x, y, 
+                    size: Math.random()*4 + 1,
+                    speedX: (Math.random()-0.5)*12, 
+                    speedY: (Math.random()-0.5)*12,
+                    life: 1.0, 
+                    decay: Math.random()*0.02 + 0.015,
+                    color
                 });
             }
         }
 
         window.startGame = function() {
             initAudio();
+            startOverlay.style.transform = "scale(0.8)";
             startOverlay.style.opacity = "0";
             setTimeout(() => {
                 startOverlay.style.display = "none";
@@ -507,7 +590,11 @@
             document.getElementById("finalScoreText").innerText = "ĐIỂM SỐ: " + score;
             document.getElementById("highScoreText").innerText = "KỶ LỤC: " + highScore;
             gameOverOverlay.style.display = "flex";
-            gameOverOverlay.style.opacity = "1";
+            gameOverOverlay.style.transform = "scale(1.1)";
+            setTimeout(() => {
+                gameOverOverlay.style.transform = "scale(1)";
+                gameOverOverlay.style.opacity = "1";
+            }, 50);
         }
 
         function resetState() {
@@ -519,9 +606,12 @@
         }
 
         window.resetGame = function() {
-            gameOverOverlay.style.display = "none";
-            isGameRunning = true;
-            resetState();
+            gameOverOverlay.style.opacity = "0";
+            setTimeout(() => {
+                gameOverOverlay.style.display = "none";
+                isGameRunning = true;
+                resetState();
+            }, 300);
         }
 
         canvas.addEventListener("pointermove", e => {
