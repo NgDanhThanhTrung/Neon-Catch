@@ -1,362 +1,294 @@
-<!DOCTYPE html>
-<html lang="vi">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Trang thông tin kỳ thi quốc gia 2026 - Sở Giáo dục và Đào tạo Hà Tĩnh</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Catch - Cyber Edition</title>
-    <style>
-        :root {
-            --neon-cyan: #00f2ff;
-            --neon-pink: #ff00ff;
-            --neon-red: #e94560;
-            --neon-yellow: #ffea00;
-            --bg-dark: #050510;
+    <link rel="stylesheet" href="/Content/Custom/Tracuu/Css/style.css" media="screen" type="text/css" />
+    <link rel="stylesheet" href="/Content/Custom/Tracuu/Css/frame.css" media="screen" type="text/css" />
+    <script type="text/javascript" src="/Content/Custom/js/jquery.min.js"></script>
+    
+    <!-- CSS bổ sung để đảm bảo hiển thị đẹp mắt, cân đối và tương thích thiết bị di động -->
+    <style type="text/css">
+        .form-reg {
+            max-w: 500px;
+            margin: 20px auto;
+            padding: 25px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #eaeaea;
         }
-        body {
-            margin: 0;
+        .q-list {
+            list-style: none;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: var(--bg-dark);
-            color: #fff;
-            font-family: 'Orbitron', sans-serif;
-            overflow: hidden;
-            user-select: none;
+            margin: 0;
         }
-        .ui-container {
-            display: flex;
-            justify-content: space-between;
-            width: 500px;
+        .q-list li {
             margin-bottom: 15px;
-            z-index: 5;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px 20px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .stat-box { text-align: center; min-width: 80px; }
-        .label { font-size: 0.6rem; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
-        .value { font-size: 1.4rem; font-weight: bold; color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); }
-        .lives-value { color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink); }
-        .combo-value { color: var(--neon-yellow); text-shadow: 0 0 10px var(--neon-yellow); }
-        #canvas-container {
-            position: relative;
-            border-radius: 20px;
-            padding: 8px;
-            background: linear-gradient(45deg, var(--neon-red), var(--neon-cyan), #7000ff);
-            background-size: 400% 400%;
-            animation: borderGradient 8s ease infinite;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-        }
-        @keyframes borderGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        canvas {
-            background: #0a0a20;
-            border-radius: 15px;
-            display: block;
-            cursor: none;
-            touch-action: none;
-        }
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        .form-group {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            border-radius: 15px;
-            backdrop-filter: blur(8px);
-            transition: all 0.5s ease;
+            margin-bottom: 15px;
         }
-        #start-overlay { background: rgba(5, 5, 20, 0.85); }
-        #game-over-overlay { background: rgba(20, 5, 5, 0.9); display: none; }
-        h1 { 
-            font-size: 3.5rem; 
-            margin: 0; 
-            letter-spacing: 8px; 
-            text-align: center; 
-            font-weight: 700;
-            background: linear-gradient(to bottom, #fff, var(--neon-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px var(--neon-cyan));
-        }
-        .instruction {
-            color: #aaa;
-            margin-top: 20px;
-            text-align: center;
-            line-height: 1.6;
-            font-size: 0.9rem;
-        }
-        button {
-            padding: 18px 50px;
-            font-size: 1.1rem;
-            background: rgba(0, 242, 255, 0.1);
-            border: 2px solid var(--neon-cyan);
-            border-radius: 15px;
-            color: var(--neon-cyan);
-            cursor: pointer;
+        .form-group label {
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            margin-top: 40px;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 14px;
         }
-        button:hover { 
-            background: var(--neon-cyan); 
-            color: #000; 
-            box-shadow: 0 0 40px var(--neon-cyan); 
-            transform: translateY(-5px) scale(1.05);
-        }
-        #powerup-status {
-            height: 40px;
-            margin-top: 20px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-align: center;
-            filter: drop-shadow(0 0 10px currentColor);
-        }
-        #milestone-text {
-            position: absolute;
-            top: 40%;
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 15px;
+            outline: none;
+            box-sizing: border-box;
             width: 100%;
+        }
+        .form-control:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 5px rgba(0,86,179,0.25);
+        }
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .captcha-input {
+            flex: 1;
+        }
+        .captcha-img-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 2px 5px;
+        }
+        #ImgCaptcha {
+            height: 34px;
+            width: 110px;
+            background: #ddd;
+            display: block;
+        }
+        #refreshCaptcha {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+            text-decoration: none;
+            color: #0056b3;
+        }
+        .btn-submit {
+            width: 100%;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background-color: #004085;
+        }
+        .btn-submit:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #err-msg {
+            color: red;
             text-align: center;
-            font-size: 3rem;
-            font-weight: 900;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+        /* Giao diện hiển thị kết quả */
+        .hd {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #28a745;
+            border-radius: 4px;
+            display: none;
+        }
+        .hd h4 {
+            margin: 0 0 10px 0;
+            color: #28a745;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 5px;
+            font-size: 16px;
             text-transform: uppercase;
-            font-style: italic;
         }
-        .pop-animation { animation: popFade 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
-        @keyframes popFade {
-            0% { transform: scale(0.5) translateY(20px); opacity: 0; }
-            30% { transform: scale(1.1) translateY(0); opacity: 1; }
-            100% { transform: scale(1) translateY(-50px); opacity: 0; }
+        .result-item {
+            margin-bottom: 8px;
+            font-size: 14px;
         }
-        .shake { animation: shake 0.5s ease-in-out; }
-        @keyframes shake {
-            0%, 100% { transform: translate(0, 0); }
-            10%, 30%, 50%, 70%, 90% { transform: translate(-4px, 0); }
-            20%, 40%, 60%, 80% { transform: translate(4px, 0); }
+        .result-item strong {
+            color: #495057;
+        }
+        #ts-mark {
+            display: block;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 15px;
+            color: #17a2b8;
+            margin-top: 5px;
+            word-wrap: break-word;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="ui-container">
-        <div class="stat-box"><div class="label">Cấp độ</div><div id="levelVal" class="value">1</div></div>
-        <div class="stat-box"><div class="label">Điểm số</div><div id="scoreVal" class="value">0</div></div>
-        <div class="stat-box"><div class="label">Mạng</div><div id="livesVal" class="value lives-value">3</div></div>
-        <div class="stat-box"><div class="label">Combo</div><div id="comboVal" class="value combo-value">0</div></div>
-    </div>
-    <div id="canvas-container">
-        <div id="milestone-text"></div>
-        <canvas id="gameCanvas" width="480" height="600"></canvas>
-        <div id="start-overlay" class="overlay">
-            <h1>NEON CATCH</h1>
-            <div class="instruction">
-                Đừng để bóng chạm đáy!<br>
-                <span style="color: var(--neon-pink)">●</span> Hứng bóng màu<br>
-                <span style="color: var(--neon-red)">☠</span> Tránh đầu lâu đỏ<br>
-                <span style="color: var(--neon-pink); font-weight: bold;">❤</span> Hứng trái tim để hồi máu
+    <!--//--Header----------------->
+    <div class="top-main">
+        <div class="wrap">
+            <div class="logo">
+                <h1>
+                    <a href="#" title="Trang thông tin kỳ thi tốt nghiệp THPT 2026">
+                        Sở Giáo dục và Đào tạo Hà Tĩnh<br />
+                        <span>TRANG THÔNG TIN KỲ THI TỐT NGHIỆP THPT 2026</span>
+                    </a>
+                </h1>
             </div>
-            <button onclick="startGame()">KHỞI ĐỘNG</button>
-        </div>
-        <div id="game-over-overlay" class="overlay">
-            <h1 style="background: linear-gradient(to bottom, #fff, var(--neon-red)); -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px var(--neon-red));">THẤT BẠI</h1>
-            <div style="text-align: center; margin-top: 30px;">
-                <p id="finalScoreText" style="font-size: 1.8rem; margin: 10px 0; color: var(--neon-cyan);">ĐIỂM: 0</p>
-                <p id="highScoreText" style="color: #666; font-size: 1rem;">KỶ LỤC: 0</p>
-            </div>
-            <button onclick="resetGame()" style="border-color: var(--neon-red); color: var(--neon-red); background: rgba(233, 69, 96, 0.1);">THỬ LẠI</button>
         </div>
     </div>
-    <div id="powerup-status"></div>
-    <script>
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
-        const scoreElement = document.getElementById("scoreVal");
-        const livesElement = document.getElementById("livesVal");
-        const comboElement = document.getElementById("comboVal");
-        const levelElement = document.getElementById("levelVal");
-        const powerupStatus = document.getElementById("powerup-status");
-        const startOverlay = document.getElementById("start-overlay");
-        const gameOverOverlay = document.getElementById("game-over-overlay");
-        const milestoneBox = document.getElementById("milestone-text");
-        let audioCtx = null;
-        function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-        }
-        function playSound(freq, type = 'square', duration = 0.1, vol = 0.05) {
-            if (!audioCtx) return;
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {}
-        }
-        let score = 0, lives = 3, combo = 0, level = 1, highScore = localStorage.getItem("neonCatchHighScore") || 0;
-        let isGameRunning = false, particles = [], objects = [], powerups = [], activePowerup = null, powerupTimer = null, gridOffset = 0;
-        const PADDLE_DEFAULT_WIDTH = 100;
-        let paddle = { width: PADDLE_DEFAULT_WIDTH, height: 12, x: 190, y: 565, color: "#00f2ff", targetX: 190 };
-        function showMilestone(text, color = "#fff") {
-            milestoneBox.innerText = text;
-            milestoneBox.style.color = color;
-            milestoneBox.style.textShadow = `0 0 20px ${color}`;
-            milestoneBox.classList.remove('pop-animation');
-            void milestoneBox.offsetWidth; 
-            milestoneBox.classList.add('pop-animation');
-        }
-        function createObject() {
-            if (objects.length > 0) return;
-            const isObstacle = level >= 2 && Math.random() < 0.25;
-            const type = isObstacle ? 'OBSTACLE' : 'NORMAL';
-            const radius = isObstacle ? 16 : 11;
-            const baseSpeed = 3.5 + (level * 0.75);
-            objects.push({
-                x: Math.random() * (canvas.width - radius * 2) + radius, y: -radius, radius: radius, type: type,
-                color: isObstacle ? '#e94560' : `hsl(${Math.random() * 360}, 80%, 60%)`,
-                speedY: activePowerup === 'SLOW' ? baseSpeed * 0.5 : baseSpeed,
-                speedX: (Math.random() - 0.5) * (level > 3 ? 12 : 5), rotation: 0, rotSpeed: (Math.random() - 0.5) * 0.15
+
+    <!--//--Main content----------------->
+    <div class="wrap">
+        <div class="q-info"><p></p></div>
+    </div>
+    
+    <div class="content-main">
+        <!-- Ràng buộc sự kiện submit của form để gọi hàm dosubmit() bằng javascript -->
+        <form id="SearchTSForm" method="post" onsubmit="dosubmit(); return false;">
+            <div class="form-reg">
+                <ul class="q-list">
+                    <li><h3 style="text-transform:uppercase;font-weight:bold;text-align:center; margin-bottom: 5px;">Sở Giáo dục và Đào tạo Hà Tĩnh</h3></li>
+                    <li><h2 style="text-align:center; margin-top: 0; margin-bottom: 25px; font-size: 20px; color: #111;">TRA CỨU ĐIỂM THI TỐT NGHIỆP THPT 2026</h2></li>
+                    
+                    <!-- Khôi phục trường nhập Số báo danh -->
+                    <li>
+                        <div class="form-group">
+                            <label for="Sobaodanh">Số báo danh <span style="color:red;">*</span></label>
+                            <input type="text" id="Sobaodanh" name="Sobaodanh" class="form-control" placeholder="Nhập số báo danh thí sinh..." required />
+                        </div>
+                    </li>
+
+                    <!-- Khôi phục trường nhập Mã xác nhận (Captcha) -->
+                    <li>
+                        <div class="form-group">
+                            <label for="Captcha">Mã xác nhận <span style="color:red;">*</span></label>
+                            <div class="captcha-container">
+                                <input type="text" id="Captcha" name="Captcha" class="form-control captcha-input" placeholder="Nhập mã xác nhận..." required />
+                                <div class="captcha-img-wrapper">
+                                    <img id="ImgCaptcha" src="/TraCuu/GetCaptcha?choose=1" alt="Mã xác nhận" onerror="this.onerror=null; this.src='https://placehold.co/110x34/cccccc/333333?text=CAPTCHA';" />
+                                    <button type="button" id="refreshCaptcha" title="Đổi mã xác nhận mới">🔄</button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!-- Nút bấm tra cứu -->
+                    <li>
+                        <button type="submit" id="btnsubmit" class="btn-submit">Tra cứu điểm</button>
+                    </li>
+
+                    <!-- Vùng thông báo lỗi -->
+                    <li>
+                        <div id="err-msg"></div>
+                    </li>
+                </ul>
+
+                <!-- Khung hiển thị kết quả điểm thi (Mặc định ẩn) -->
+                <div class="hd">
+                    <h4>Kết quả thi tốt nghiệp</h4>
+                    <div class="result-item"><strong>Họ tên:</strong> <span id="ts-name">N/A</span></div>
+                    <div class="result-item"><strong>Số báo danh:</strong> <span id="ts-sbd">N/A</span></div>
+                    <div class="result-item">
+                        <strong>Chi tiết điểm số:</strong>
+                        <div id="ts-mark">Đang cập nhật...</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!--//--Footer----------------->
+    <div class="footer-main">
+        <div class="wrap">
+            <p>Sở Giáo dục và Đào tạo Hà Tĩnh</p>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // Xử lý sự kiện nhấn làm mới captcha
+        $("#refreshCaptcha").click(function () {
+            $("#ImgCaptcha").attr("src", "/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
+        });
+
+        $(document).ready(function () {
+            // Tải mã Captcha khởi động
+            $("#ImgCaptcha").attr("src", "/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
+
+            // Tự động căn chỉnh chiều cao nội dung chính theo màn hình
+            $(window).resize(function () {
+                var minHeight = $(window).height() - $(".top-main").outerHeight() - $(".footer-main").outerHeight() - 65;
+                $(".content-main").css({ "min-height": minHeight });
             });
-        }
-        function spawnPowerup() {
-            const types = [{ type: 'WIDE', color: '#ffea00', label: 'THANH CHẮN SIÊU RỘNG' }, { type: 'SLOW', color: '#00ff88', label: 'THỜI GIAN NGƯNG ĐỌNG' }, { type: 'LIFE', color: '#ff00ff', label: 'HỒI PHỤC SINH MỆNH' }];
-            let chosen = Math.random() < 0.15 ? types[2] : (Math.random() < 0.5 ? types[0] : types[1]);
-            powerups.push({ x: Math.random() * (canvas.width - 40) + 20, y: -30, size: 28, type: chosen.type, color: chosen.color, label: chosen.label, speedY: 2.5 });
-        }
-        function drawHeart(ctx, x, y, size, color) {
-            ctx.save(); ctx.translate(x, y); ctx.beginPath();
-            const topCurveHeight = size * 0.3;
-            ctx.moveTo(0, topCurveHeight);
-            ctx.bezierCurveTo(0, 0, -size / 2, 0, -size / 2, topCurveHeight);
-            ctx.bezierCurveTo(-size / 2, (size + topCurveHeight) / 2.2, 0, size, 0, size);
-            ctx.bezierCurveTo(0, size, size / 2, (size + topCurveHeight) / 2.2, size / 2, topCurveHeight);
-            ctx.bezierCurveTo(size / 2, 0, 0, 0, 0, topCurveHeight);
-            ctx.closePath(); ctx.fillStyle = color; ctx.fill(); ctx.restore();
-        }
-        function drawSkull(ctx, x, y, radius, color) {
-            ctx.save(); ctx.translate(x, y); ctx.fillStyle = color;
-            ctx.beginPath(); ctx.arc(0, -radius * 0.2, radius * 0.7, Math.PI, 0); ctx.lineTo(radius * 0.5, radius * 0.6); ctx.lineTo(-radius * 0.5, radius * 0.6); ctx.closePath(); ctx.fill();
-            ctx.fillRect(-radius * 0.3, radius * 0.6, radius * 0.15, radius * 0.2); ctx.fillRect(-radius * 0.075, radius * 0.6, radius * 0.15, radius * 0.2); ctx.fillRect(radius * 0.15, radius * 0.6, radius * 0.15, radius * 0.2);
-            ctx.fillStyle = "#000"; ctx.beginPath(); ctx.arc(-radius * 0.25, -radius * 0.15, radius * 0.18, 0, Math.PI * 2); ctx.arc(radius * 0.25, -radius * 0.15, radius * 0.18, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.moveTo(0, radius * 0.1); ctx.lineTo(radius * 0.08, radius * 0.25); ctx.lineTo(-radius * 0.08, radius * 0.25); ctx.closePath(); ctx.fill();
-            ctx.restore();
-        }
-        function applyPowerup(item) {
-            if (item.type === 'LIFE') {
-                lives++; updateUI(); showMilestone("+1 MẠNG!", "#ff00ff"); playSound(659, 'sine', 0.4, 0.1); createParticles(item.x, item.y, "#ff00ff", 30); return;
-            }
-            clearTimeout(powerupTimer); resetPowerupEffects();
-            activePowerup = item.type; powerupStatus.innerText = item.label; powerupStatus.style.color = item.color; playSound(523, 'sine', 0.3, 0.1); 
-            if (item.type === 'WIDE') { paddle.width = 240; paddle.color = "#ffea00"; }
-            else if (item.type === 'SLOW') { objects.forEach(o => o.speedY *= 0.5); paddle.color = "#00ff88"; }
-            powerupTimer = setTimeout(resetPowerupEffects, 8000);
-        }
-        function resetPowerupEffects() { activePowerup = null; paddle.width = PADDLE_DEFAULT_WIDTH; paddle.color = "#00f2ff"; powerupStatus.innerText = ""; }
-        function triggerShake() { const container = document.getElementById('canvas-container'); container.classList.add('shake'); setTimeout(() => container.classList.remove('shake'), 500); }
-        function update() {
-            if (!isGameRunning) return;
-            paddle.x += (paddle.targetX - paddle.x) * 0.22;
-            if (objects.length === 0) createObject();
-            for (let i = objects.length - 1; i >= 0; i--) {
-                let obj = objects[i]; obj.y += obj.speedY; obj.x += obj.speedX; obj.rotation += obj.rotSpeed;
-                if (obj.x + obj.radius > canvas.width || obj.x - obj.radius < 0) { obj.speedX *= -1; playSound(200, 'sine', 0.05, 0.01); }
-                if (obj.y + obj.radius > paddle.y && obj.y - obj.radius < paddle.y + paddle.height && obj.x + obj.radius > paddle.x && obj.x - obj.radius < paddle.x + paddle.width) {
-                    if (obj.type === 'OBSTACLE') { lives--; combo = 0; triggerShake(); playSound(80, 'sawtooth', 0.5, 0.2); showMilestone("CRITICAL DAMAGE!", "#e94560"); createParticles(obj.x, obj.y, "#ff0000", 20); }
-                    else {
-                        combo++; score += (1 + Math.floor(combo / 10));
-                        if (combo % 10 === 0) { showMilestone(`${combo} COMBO!`, "#ffea00"); playSound(440 + combo * 2, 'sine', 0.2); }
-                        if (Math.random() < 0.12 + (level * 0.01)) spawnPowerup();
-                        playSound(300 + Math.min(combo * 10, 500), 'sine', 0.08); createParticles(obj.x, obj.y, obj.color, 15);
+            var minHeight = $(window).height() - $(".top-main").outerHeight() - $(".footer-main").outerHeight() - 65;
+            $(".content-main").css({ "min-height": minHeight });
+        });
+
+        // Hàm xử lý gửi yêu cầu tra cứu AJAX
+        function dosubmit() {
+            $("#btnsubmit").attr("disabled", "disabled");
+            $("#err-msg").css("color", "#0056b3").html("Đang tiến hành tra cứu...");
+            $(".hd").hide();
+
+            $.ajax({
+                url: '/TraCuu/TraCuu',
+                type: 'POST',
+                data: $("#SearchTSForm").serialize(),
+                error: function (data) {
+                    $("#btnsubmit").removeAttr("disabled");
+                    $("#err-msg").css("color", "red").html("Không thể kết nối đến máy chủ tra cứu. Vui lòng thử lại sau.");
+                    $(".hd").hide();
+                    $("#ImgCaptcha").attr("src", "/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
+                },
+                success: function (data) {
+                    $("#btnsubmit").removeAttr("disabled");
+                    
+                    if (data && data.Message != null) {
+                        // Hiển thị thông báo lỗi từ hệ thống
+                        $("#err-msg").css("color", "red").html(data.Message);
+                        $(".hd").hide();
+                    } else if (data && data.DIEM_THI) {
+                        // Cập nhật thông tin thí sinh và điểm thi lên giao diện
+                        $("#ts-name").html(data.HO_TEN || "Thí sinh tự do");
+                        $("#ts-sbd").html(data.SOBAODANH || $("#Sobaodanh").val());
+                        $("#ts-mark").html(data.DIEM_THI.replace(/ /g, "&nbsp;"));
+                        
+                        $("#err-msg").html("");
+                        $(".hd").show();
+                    } else {
+                        $("#err-msg").css("color", "red").html("Dữ liệu phản hồi từ máy chủ không hợp lệ.");
+                        $(".hd").hide();
                     }
-                    updateUI(); objects.splice(i, 1);
-                    if (Math.floor(score / 30) + 1 > level) { level++; levelElement.innerText = level; showMilestone(`CẤP ĐỘ ${level}`, "#00f2ff"); playSound(880, 'triangle', 0.6); }
-                    if (lives <= 0) endGame(); continue;
-                }
-                if (obj.y - obj.radius > canvas.height) {
-                    if (obj.type === 'NORMAL') { lives--; combo = 0; triggerShake(); playSound(120, 'sawtooth', 0.3, 0.15); showMilestone("MISSED!", "#ff00ff"); updateUI(); if (lives <= 0) endGame(); }
-                    objects.splice(i, 1);
-                }
-            }
-            for (let i = powerups.length - 1; i >= 0; i--) {
-                let pu = powerups[i]; pu.y += pu.speedY;
-                if (pu.y + (pu.size / 2) > paddle.y && pu.y - (pu.size / 2) < paddle.y + paddle.height && pu.x + (pu.size / 2) > paddle.x && pu.x - (pu.size / 2) < paddle.x + paddle.width) {
-                    applyPowerup(pu); createParticles(pu.x, pu.y, pu.color, 25); powerups.splice(i, 1);
-                } else if (pu.y > canvas.height) powerups.splice(i, 1);
-            }
-            for (let i = particles.length - 1; i >= 0; i--) {
-                let p = particles[i]; p.x += p.speedX; p.y += p.speedY; p.life -= p.decay;
-                if (p.life <= 0) particles.splice(i, 1);
-            }
-        }
-        function updateUI() { scoreElement.innerText = score; comboElement.innerText = combo; livesElement.innerText = Math.max(0, lives); }
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = "rgba(0, 242, 255, 0.05)"; ctx.lineWidth = 1; gridOffset = (gridOffset + 0.5) % 40;
-            for(let x=0; x<=canvas.width; x+=40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
-            for(let y=gridOffset; y<=canvas.height; y+=40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
-            ctx.shadowBlur = activePowerup ? 35 : 20; ctx.shadowColor = paddle.color; ctx.fillStyle = paddle.color;
-            ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, 6); else ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height); ctx.fill();
-            ctx.fillStyle = "rgba(255, 255, 255, 0.4)"; ctx.fillRect(paddle.x + 5, paddle.y + 2, paddle.width - 10, 3);
-            objects.forEach(obj => {
-                ctx.shadowBlur = obj.type === 'OBSTACLE' ? 30 : 20; ctx.shadowColor = obj.color;
-                if (obj.type === 'OBSTACLE') drawSkull(ctx, obj.x, obj.y, obj.radius, obj.color);
-                else {
-                    ctx.save(); ctx.translate(obj.x, obj.y); ctx.rotate(obj.rotation); ctx.fillStyle = obj.color; ctx.beginPath(); ctx.arc(0, 0, obj.radius, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = "rgba(255,255,255,0.5)"; ctx.beginPath(); ctx.arc(-obj.radius/3, -obj.radius/3, obj.radius/4, 0, Math.PI*2); ctx.fill(); ctx.restore();
+                    
+                    // Cập nhật lại mã Captcha mới
+                    $("#ImgCaptcha").attr("src", "/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
                 }
             });
-            powerups.forEach(pu => {
-                ctx.shadowBlur = 30; ctx.shadowColor = pu.color; ctx.strokeStyle = pu.color; ctx.lineWidth = 2;
-                ctx.beginPath(); ctx.arc(pu.x, pu.y, (pu.size/2) + 5 + Math.sin(Date.now()/200)*3, 0, Math.PI*2); ctx.stroke();
-                if(pu.type === 'LIFE') drawHeart(ctx, pu.x, pu.y - (pu.size/2.5), pu.size, pu.color);
-                else {
-                    ctx.fillStyle = pu.color; ctx.beginPath(); ctx.arc(pu.x, pu.y, pu.size/2, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = "#000"; ctx.font = "bold 12px sans-serif"; ctx.textAlign = "center"; ctx.fillText(pu.type[0], pu.x, pu.y + 5);
-                }
-            });
-            ctx.shadowBlur = 0;
-            particles.forEach(p => { ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
-            ctx.globalAlpha = 1.0; update(); requestAnimationFrame(draw);
         }
-        function createParticles(x, y, color, count) {
-            for(let i=0; i<count; i++) particles.push({ x, y, size: Math.random()*4 + 1, speedX: (Math.random()-0.5)*12, speedY: (Math.random()-0.5)*12, life: 1.0, decay: Math.random()*0.02 + 0.015, color });
-        }
-        window.startGame = function() { initAudio(); startOverlay.style.transform = "scale(0.8)"; startOverlay.style.opacity = "0"; setTimeout(() => { startOverlay.style.display = "none"; isGameRunning = true; resetState(); }, 500); }
-        function endGame() {
-            isGameRunning = false; lives = 0; updateUI();
-            if (score > highScore) { highScore = score; localStorage.setItem("neonCatchHighScore", highScore); }
-            document.getElementById("finalScoreText").innerText = "ĐIỂM SỐ: " + score; document.getElementById("highScoreText").innerText = "KỶ LỤC: " + highScore;
-            gameOverOverlay.style.display = "flex"; gameOverOverlay.style.transform = "scale(1.1)"; setTimeout(() => { gameOverOverlay.style.transform = "scale(1)"; gameOverOverlay.style.opacity = "1"; }, 50);
-        }
-        function resetState() { score = 0; lives = 3; combo = 0; level = 1; objects = []; powerups = []; particles = []; updateUI(); levelElement.innerText = 1; resetPowerupEffects(); }
-        window.resetGame = function() { gameOverOverlay.style.opacity = "0"; setTimeout(() => { gameOverOverlay.style.display = "none"; isGameRunning = true; resetState(); }, 300); }
-        canvas.addEventListener("pointermove", e => { if (!isGameRunning) return; let rect = canvas.getBoundingClientRect(); paddle.targetX = (e.clientX - rect.left) - paddle.width / 2; if(paddle.targetX < 0) paddle.targetX = 0; if(paddle.targetX > canvas.width - paddle.width) paddle.targetX = canvas.width - paddle.width; });
-        window.onload = () => { requestAnimationFrame(draw); };
     </script>
 </body>
 </html>
