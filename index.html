@@ -4,16 +4,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Trang thông tin kỳ thi quốc gia 2026 - Sở Giáo dục và Đào tạo Hà Tĩnh</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/Content/Custom/Tracuu/Css/style.css" media="screen" type="text/css" />
-    <link rel="stylesheet" href="/Content/Custom/Tracuu/Css/frame.css" media="screen" type="text/css" />
     
-    <!-- Thay thế đường dẫn jQuery cục bộ bằng CDN của jQuery để khắc phục lỗi $ is not defined -->
+    <!-- Tích hợp trực tiếp các file CSS cấu hình từ địa chỉ gốc của Sở GD&ĐT Hà Tĩnh -->
+    <link rel="stylesheet" href="http://tracuudiemthi.hatinh.edu.vn/Content/Custom/Tracuu/Css/style.css" media="screen" type="text/css" />
+    <link rel="stylesheet" href="http://tracuudiemthi.hatinh.edu.vn/Content/Custom/Tracuu/Css/frame.css" media="screen" type="text/css" />
+    
+    <!-- Khắc phục lỗi bằng cách sử dụng CDN jQuery bảo mật qua HTTPS thay vì liên kết HTTP nội bộ bị chặn -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     
-    <!-- CSS bổ sung để đảm bảo hiển thị đẹp mắt, cân đối và tương thích thiết bị di động -->
+    <!-- CSS bổ sung để tối ưu và làm nổi bật các ô nhập liệu mới được khôi phục cũng như bảng điểm kết quả -->
     <style type="text/css">
         .form-reg {
-            max-w: 500px;
+            max-width: 500px;
             margin: 20px auto;
             padding: 25px;
             background: #fff;
@@ -33,6 +35,7 @@
             display: flex;
             flex-direction: column;
             margin-bottom: 15px;
+            text-align: left;
         }
         .form-group label {
             font-weight: bold;
@@ -119,6 +122,7 @@
             border-left: 4px solid #28a745;
             border-radius: 4px;
             display: none;
+            text-align: left;
         }
         .hd h4 {
             margin: 0 0 10px 0;
@@ -175,7 +179,7 @@
             <div class="form-reg">
                 <ul class="q-list">
                     <li><h3 style="text-transform:uppercase;font-weight:bold;text-align:center; margin-bottom: 5px;">Sở Giáo dục và Đào tạo Hà Tĩnh</h3></li>
-                    <li><h2 style="text-align:center; margin-top: 0; margin-bottom: 25px; font-size: 20px; color: #111;">TRA CỨU ĐIỂM THI TỐT NGHIỆP THPT 2026</h2></li>
+                    <li><h2 style="text-align:center; margin-top: 0; margin-bottom: 25px; font-size: 20px;">TRA CỨU ĐIỂM THI TỐT NGHIỆP THPT 2026</h2></li>
                     
                     <!-- Khôi phục trường nhập Số báo danh -->
                     <li>
@@ -192,7 +196,7 @@
                             <div class="captcha-container">
                                 <input type="text" id="Captcha" name="Captcha" class="form-control captcha-input" placeholder="Nhập mã xác nhận..." required />
                                 <div class="captcha-img-wrapper">
-                                    <img id="ImgCaptcha" src="/TraCuu/GetCaptcha?choose=1" alt="Mã xác nhận" onerror="this.onerror=null; this.src='https://placehold.co/110x34/cccccc/333333?text=CAPTCHA';" />
+                                    <img id="ImgCaptcha" src="http://tracuudiemthi.hatinh.edu.vn/TraCuu/GetCaptcha?choose=1" alt="Mã xác nhận" onerror="this.onerror=null; this.src='https://placehold.co/110x34/cccccc/333333?text=CAPTCHA';" />
                                     <button type="button" id="refreshCaptcha" title="Đổi mã xác nhận mới">🔄</button>
                                 </div>
                             </div>
@@ -232,14 +236,14 @@
     </div>
 
     <script type="text/javascript">
-        // Xử lý sự kiện nhấn làm mới captcha
+        // Xử lý sự kiện nhấn làm mới captcha - chuyển hướng liên kết tuyệt đối về máy chủ Hà Tĩnh
         $("#refreshCaptcha").click(function () {
-            $("#ImgCaptcha").attr("src", "/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
+            $("#ImgCaptcha").attr("src", "http://tracuudiemthi.hatinh.edu.vn/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
         });
 
         $(document).ready(function () {
-            // Tải mã Captcha khởi động
-            $("#ImgCaptcha").attr("src", "/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
+            // Tải mã Captcha khởi động từ máy chủ Hà Tĩnh
+            $("#ImgCaptcha").attr("src", "http://tracuudiemthi.hatinh.edu.vn/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
 
             // Tự động căn chỉnh chiều cao nội dung chính theo màn hình
             $(window).resize(function () {
@@ -250,21 +254,21 @@
             $(".content-main").css({ "min-height": minHeight });
         });
 
-        // Hàm xử lý gửi yêu cầu tra cứu AJAX
+        // Hàm xử lý gửi yêu cầu tra cứu AJAX sử dụng endpoint tuyệt đối của Sở Hà Tĩnh
         function dosubmit() {
             $("#btnsubmit").attr("disabled", "disabled");
             $("#err-msg").css("color", "#0056b3").html("Đang tiến hành tra cứu...");
             $(".hd").hide();
 
             $.ajax({
-                url: '/TraCuu/TraCuu',
+                url: 'http://tracuudiemthi.hatinh.edu.vn/TraCuu/TraCuu',
                 type: 'POST',
                 data: $("#SearchTSForm").serialize(),
                 error: function (data) {
                     $("#btnsubmit").removeAttr("disabled");
                     $("#err-msg").css("color", "red").html("Không thể kết nối đến máy chủ tra cứu. Vui lòng thử lại sau.");
                     $(".hd").hide();
-                    $("#ImgCaptcha").attr("src", "/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
+                    $("#ImgCaptcha").attr("src", "http://tracuudiemthi.hatinh.edu.vn/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
                 },
                 success: function (data) {
                     $("#btnsubmit").removeAttr("disabled");
@@ -287,7 +291,7 @@
                     }
                     
                     // Cập nhật lại mã Captcha mới
-                    $("#ImgCaptcha").attr("src", "/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
+                    $("#ImgCaptcha").attr("src", "http://tracuudiemthi.hatinh.edu.vn/TraCuu/GetCaptcha?time=" + new Date().getTime() + "&choose=1");
                 }
             });
         }
